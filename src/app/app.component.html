@@ -29,9 +29,12 @@
 </div>
 
 <div class="snapshot" *ngIf="webcamImage">
+  <h2 *ngIf="socketRes || socketRes.accuracy"> Accuracy: {{socketRes.accuracy}}</h2>
   <h2 *ngIf="socketRes || socketRes.name"> Detected Individual: {{socketRes.name}}</h2>
   <img *ngIf="socketRes || socketRes.imgString" [src]="socketRes.imgString" /> 
 </div>
+
+
 
 <h4 *ngIf="errors.length > 0">Messages:</h4>
 <ul *ngFor="let error of errors">
