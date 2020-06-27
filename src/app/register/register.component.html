@@ -1,0 +1,68 @@
+<div class="py-5">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <span class="anchor" id="formLogin"></span>
+
+      <!-- form card login -->
+      <div class="card rounded-0">
+        <div class="card-header bg-dark">
+          <h3 class="mb-0 text-white">Register</h3>
+        </div>
+        <div class="card-body">
+          <form #registerForm="ngForm" class="form">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel" name="email"
+                [(ngModel)]="registerUserData.email" [class.is-invalid]="email.invalid && email.touched"
+                class="form-control rounded-0" required>
+              <div *ngIf="email.errors && (email.invalid || email.touched)">
+                <small class="text-danger" *ngIf="email.errors.required">Email is required</small>
+                <small class="text-danger" *ngIf="email.errors.pattern">Invalid Email format</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" [(ngModel)]="registerUserData.name" #name="ngModel" name="name" class="form-control rounded-0"
+                required minlength="3" maxlength="20">
+              <div *ngIf="name.errors && (name.invalid || name.touched)">
+                <small class="text-danger" *ngIf="name.errors.required">Name is required</small>
+                <small class="text-danger" *ngIf="name.errors.minlength">Name must be more than 3 character</small>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" [(ngModel)]="registerUserData.password" #password="ngModel" name="password" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]"
+                class="form-control rounded-0" required minlength="6">
+                <div *ngIf="password.errors && (password.invalid || password.touched)">
+                  <small class="text-danger" *ngIf="password.errors.required">Password is required</small>
+                  <small class="text-danger" *ngIf="password.errors.minlength">Password must be more than 6 character</small>
+                  <small class="text-danger" *ngIf="password.errors.minlength">Password must be more than 6 character</small>
+                </div>
+            </div>
+            <button type="button" (click)="registerUser()" minpattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]$" [disabled]="!registerForm.form.valid"class="btn btn-primary float-right">Register</button>
+          </form>
+        </div>
+        <!--/card-block-->
+      </div>
+      <!-- /form card login -->
+
+    </div>
+
+
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="success-register">Successful Registration</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>User Successful Registered</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="goToLogin()">Go To Login</button>
+  </div>
+</ng-template>

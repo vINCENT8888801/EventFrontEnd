@@ -1,0 +1,39 @@
+<div class="py-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <span class="anchor" id="formLogin"></span>
+  
+        <!-- form card login -->
+        <div class="card rounded-0">
+          <div class="card-header bg-dark">
+            <h3 class="mb-0 text-white">Login</h3>
+          </div>
+          <div class="card-body">
+            <form #loginForm="ngForm" class="form">
+              <div class="form-group">
+                <label >Email</label>
+                <input type="text" #email="ngModel" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control rounded-0" [(ngModel)]="loginUserData.email" name="email" required>
+                <div *ngIf="email.errors && (email.invalid || email.touched)">
+                  <small class="text-danger" *ngIf="email.errors.required">Email is required</small>
+                  <small class="text-danger" *ngIf="email.errors.pattern">Invalid Email format</small>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control rounded-0" [(ngModel)]="loginUserData.password" name="password" required>
+              </div>
+              <small class="text-danger" *ngIf="invalidCredential">Wrong Email or password</small>
+              <button type="button" (click)="loginUser()" class="btn btn-success float-right">Login</button>
+            </form>
+          </div>
+          <!--/card-block-->
+        </div>
+        <!-- /form card login -->
+  
+      </div>
+  
+  
+    </div>
+  </div>
+
+  

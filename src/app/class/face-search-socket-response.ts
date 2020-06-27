@@ -8,6 +8,4 @@ export class FaceSearchSocketResponse {
     public imgString :String ;
     public accuracy :Float64Array ;
     
-    
-    
 }

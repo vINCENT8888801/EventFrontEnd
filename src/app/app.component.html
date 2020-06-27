@@ -1,45 +1,49 @@
-
-
-<div style="text-align:center ; margin:0px">
+<!-- <div style="text-align:center ; margin:0px">
   <div class="header">
     <h1>
       Event Management System Register Attendee Demo
     </h1>
   </div>
-  
+</div> -->
 
-  <div class="body">
-    <webcam [height]="500" [width]="500" [trigger]="triggerObservable" (imageCapture)="handleImage($event)" *ngIf="showWebcam"
-            [allowCameraSwitch]="allowCameraSwitch" [switchCamera]="nextWebcamObservable"
-            [videoOptions]="videoOptions"
-            [imageQuality]="1"
-            (cameraSwitched)="cameraWasSwitched($event)"
-            (initError)="handleInitError($event)"
-    ></webcam>
-    <br/>
-    <!--<button class="actionBtn" (click)="triggerSnapshot();">Take A Snapshot</button>
-    <button class="actionBtn" (click)="toggleWebcam();">Toggle Webcam</button>
-    <br/>
-    <button class="actionBtn" (click)="showNextWebcam(true);" [disabled]="!multipleWebcamsAvailable">Next Webcam</button>
-    <input id="cameraSwitchCheckbox" type="checkbox" [(ngModel)]="allowCameraSwitch"><label for="cameraSwitchCheckbox">Allow Camera Switch</label>
-    <br/>
-    DeviceId: <input id="deviceId" type="text" [(ngModel)]="deviceId" style="width: 500px">
-    <button (click)="showNextWebcam(deviceId);">Activate</button> -->
+
+<div *ngIf="_authService.loggedIn()" id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+  <a href="#">Home</a>
+  <a href="#">Event</a>
+  <a href="#">Blacklist</a>
+</div>
+
+<!-- <h2>Animated Sidenav Example</h2>
+  <p>Click on the element below to open the side navigation menu.</p> -->
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <span *ngIf="_authService.loggedIn()"  style="color:white; font-size:30px;cursor:pointer" (click)="openNav()">&#9776;</span>
+  <a class="navbar-brand" href="#">EventApp</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <!-- <li class="nav-item">
+        <a class="nav-link" routerLink="/events" routerLinkActive="active">Events</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/special" routerLinkActive="active">Members</a>
+      </li> -->
+    </ul>
+    <ul class="navbar-nav">
+      <a class="nav-link" *ngIf="!_authService.loggedIn()" routerLink="/login" routerLinkActive="active">Login</a>
+      <a class="nav-link" *ngIf="!_authService.loggedIn()" routerLink="/register" routerLinkActive="active">Register</a>
+      <a class="nav-link" style="cursor:pointer" *ngIf="_authService.loggedIn()"
+        (click)="_authService.logoutUser()">Logout</a>
+      
+    </ul>
   </div>
+</nav>
+<div class="container">
+  <router-outlet></router-outlet>
 </div>
-
-<div class="snapshot" *ngIf="webcamImage">
-  <h2 *ngIf="socketRes || socketRes.accuracy"> Accuracy: {{socketRes.accuracy}}</h2>
-  <h2 *ngIf="socketRes || socketRes.name"> Detected Individual: {{socketRes.name}}</h2>
-  <img *ngIf="socketRes || socketRes.imgString" [src]="socketRes.imgString" /> 
-</div>
-
-
-
-<h4 *ngIf="errors.length > 0">Messages:</h4>
-<ul *ngFor="let error of errors">
-  <li>{{error | json}}</li>
-</ul>
-
-
-
