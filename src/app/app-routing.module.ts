@@ -5,6 +5,9 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './auth.guard';
+import { EventMainComponent } from './event/event-main/event-main.component';
+import { EventDetailComponent } from './event/event-detail/event-detail.component';
+import { EventCreateComponent } from './event/event-create/event-create.component';
 
 
 
@@ -15,23 +18,33 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'home',
-    canActivate: [AuthGuard],
-    component: HomeComponent
-  },
-  // {
-  //   path: 'special',
-    
-  //   component: SpecialEventsComponent
-  // },
-  {
     path: 'login',
     component: LoginComponent
   },
   {
     path: 'register',
     component: RegisterComponent
-  }
+  },
+  {
+    path: 'home',
+    canActivate: [AuthGuard],
+    component: HomeComponent
+  },
+  {
+    path: 'event',
+    canActivate: [AuthGuard],
+    component: EventMainComponent
+  },
+  {
+    path: 'eventDetail',
+    //canActivate: [AuthGuard],
+    component: EventDetailComponent
+  },
+  {
+    path: 'eventCreate',
+    //canActivate: [AuthGuard],
+    component: EventCreateComponent
+  },
 ];
 
 @NgModule({

@@ -1,0 +1,33 @@
+<div class="container mt-2">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h3">Events</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <button class="btn btn-bm btn-outline-success" routerLink="/eventCreate">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>No. </th>
+          <th>Name</th>
+          <th>Date Time</th>
+          <th>Maximum Attendee</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let aEvent of eventList ;index as i">
+          <td> {{i}} </td>
+          <td> {{aEvent.name}} </td>
+          <td> {{aEvent.dateTime | date: 'medium'}} </td>
+          <td> {{aEvent.maxAttendee}}  </td>
+          <td><button class="btn btn-sm btn-outline-success" (click)="goToDetail(aEvent.id)" >Edit</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

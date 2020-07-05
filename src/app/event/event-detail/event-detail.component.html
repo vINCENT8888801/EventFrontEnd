@@ -1,0 +1,84 @@
+<div *ngIf="response" class="container mt-2">
+
+  <form class="form-horizontal" action="/action_page.php">
+    <div class="form-group">
+      <h2>Event Details</h2>
+    </div>
+
+    <form #eventDetailForm="ngForm" class="form">
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Event Name</label>
+        <input type="text" #name="ngModel" class="col-sm-9" [(ngModel)]="response.name" name="name" required>
+        <div class="col-sm" *ngIf="name.errors && name.touched">
+          <small class="text-danger" *ngIf="name.errors.required">Event Name is required</small>
+          <small class="text-danger" *ngIf="name.errors.panamettern">Invalid Event Name format</small>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Event Date</label>
+        <div class="input-group  p-0 col-sm-9">
+          <input class="form-control" name="date" [(ngModel)]="response.dateTime" [minDate]="minDate" ngbDatepicker
+            #d="ngbDatepicker">
+          <div class="input-group-append">
+            <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Event Time</label>
+        <ngb-timepicker [(ngModel)]="time" [spinners]="false" [meridian]="true" name="time" required></ngb-timepicker>
+        <div *ngIf="name.errors && name.touched">
+          <small class="text-danger" *ngIf="!time">Event Time is required</small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-3 col-form-label">Unlimited Participant? </label>
+        <div class="custom-control custom-switch m-2">
+          <input type="checkbox" class="custom-control-input" #name="ngModel"
+            [(ngModel)]="response.unlimitedParticipant" id="customSwitch1" name="unlimitedParticipant">
+          <label class="custom-control-label" for="customSwitch1"></label>
+        </div>
+      </div>
+      <div *ngIf="!response.unlimitedParticipant" class="form-group row">
+        <label class="col-sm-3 col-form-label">Current Attendee No.</label>
+        <input type="number" [(ngModel)]="response.currentParticipant" #currentParticipant="ngModel" class="col-sm-9"
+          name="currentParticipant" required disabled>
+      </div>
+      <div *ngIf="!response.unlimitedParticipant" class="form-group row">
+        <label class="col-sm-3 col-form-label">Maximum Attendee No.</label>
+        <input type="number" [(ngModel)]="response.maxAttendee" #maxAttendee="ngModel" class="col-sm-9"
+          name="maxAttendee" min="response.currentParticipant" required>
+        <div class="col-sm" *ngIf="maxAttendee.errors && (maxAttendee.invalid || maxAttendee.touched)">
+          <small class="text-danger" *ngIf="maxAttendee.errors.required">This input is required</small>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-8"></div>
+        <div class="col-sm-4 flex-row-reverse px-0">
+          <button (click)="goBackToEventDetail()" class="btn btn-secondary mx-0 float-right">Back</button>
+          <button (click)="updateEventDetail()" [disabled]="!eventDetailForm.form.valid"
+            class="btn btn-success mx-2 px-3 float-right">Update</button>
+        </div>
+      </div>
+
+    </form>
+
+  </form>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header bg-green">
+    <h4 class="modal-title" id="success-register">Successful Update</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Event Successfully Updated</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="goToEvent()">Continue</button>
+  </div>
+</ng-template>

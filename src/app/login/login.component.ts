@@ -14,7 +14,7 @@ import { HttpResponseEnum } from '../class/HttpResponseEnum';
 export class LoginComponent implements OnInit {
 
   loginUserData = new LoginUserRequestBody();
-  invalidCredential = false
+  invalidCredential = false;
 
   constructor(
     private _auth: AuthService,

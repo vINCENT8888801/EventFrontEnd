@@ -8,14 +8,18 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AttendanceModeComponent } from './attendance-mode/attendance-mode.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbDateAdapter, NgbDateNativeAdapter } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { TokenInterceptorService } from './token-interceptor.service';
 import { HomeComponent } from './home/home.component';
-import { EventCreateComponent } from './event-create/event-create.component';
+import { BlacklistMainComponent } from './blacklist-main/blacklist-main.component';
+import { DatePipe } from '@angular/common';
+import { EventCreateComponent } from './event/event-create/event-create.component';
+import { EventMainComponent } from './event/event-main/event-main.component';
+import { EventDetailComponent } from './event/event-detail/event-detail.component';
 
 
 @NgModule({
@@ -25,7 +29,10 @@ import { EventCreateComponent } from './event-create/event-create.component';
     RegisterComponent,
     LoginComponent,
     HomeComponent,
-    EventCreateComponent
+    EventCreateComponent,
+    EventMainComponent,
+    BlacklistMainComponent,
+    EventDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +42,8 @@ import { EventCreateComponent } from './event-create/event-create.component';
     AppRoutingModule,
     NgbModule
   ],
-  providers: [AuthService, AuthGuard,{
+  providers: [AuthService, AuthGuard,DatePipe,
+    {
     provide: HTTP_INTERCEPTORS,
     useClass: TokenInterceptorService,
     multi: true

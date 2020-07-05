@@ -9,8 +9,8 @@
 
 <div *ngIf="_authService.loggedIn()" id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
-  <a href="#">Home</a>
-  <a href="#">Event</a>
+  <a (click)="navBarRedirect('home')">Home</a>
+  <a (click)="navBarRedirect('event')">Event</a>
   <a href="#">Blacklist</a>
 </div>
 

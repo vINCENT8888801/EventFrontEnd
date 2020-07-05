@@ -15,12 +15,13 @@ export class RegisterComponent implements OnInit {
   @ViewChild('content') content;
   response: RegisterUserResponse;
   closeResult = '';
-  registerUserData = new RegisterUserRequestBody();
+  registerUserData : RegisterUserRequestBody;
   constructor(private _auth: AuthService, 
               private _router: Router,
               private modalService: NgbModal) { }
 
   ngOnInit() {
+    this.registerUserData = new RegisterUserRequestBody();
     this.registerUserData.image64bit = "aaaa";
   }
 
