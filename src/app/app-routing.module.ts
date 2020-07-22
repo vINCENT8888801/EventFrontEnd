@@ -8,6 +8,7 @@ import { AuthGuard } from './auth.guard';
 import { EventMainComponent } from './event/event-main/event-main.component';
 import { EventDetailComponent } from './event/event-detail/event-detail.component';
 import { EventCreateComponent } from './event/event-create/event-create.component';
+import { AttendanceModeComponent } from './attendance-mode/attendance-mode.component';
 
 
 
@@ -43,7 +44,12 @@ const routes: Routes = [
   {
     path: 'eventCreate',
     //canActivate: [AuthGuard],
-    component: EventCreateComponent
+    component: EventCreateComponent 
+  },
+  {
+    path: 'attendance',
+    //canActivate: [AuthGuard],
+    component: AttendanceModeComponent
   },
 ];
 

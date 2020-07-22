@@ -16,7 +16,7 @@ import { ThrowStmt } from '@angular/compiler';
   providers: [{provide: NgbDateAdapter, useClass: NgbDateNativeUTCAdapter}]
 })
 export class EventCreateComponent implements OnInit {
-  @ViewChild('content') content;
+  @ViewChild('content') content; 
   date : Date ;
   time  = {hour: 0, minute: 0};
   minDate : any;

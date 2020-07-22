@@ -6,6 +6,7 @@ export class Event {
 	public id : String ;
     public name :String ;
     public maxAttendee :Number ;
-    public dateTime : Date;
+    public datetime : Date;
     public unlimitedParticipant : boolean;
+    public libraryId : String;
 }

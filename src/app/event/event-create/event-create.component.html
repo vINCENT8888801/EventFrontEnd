@@ -72,7 +72,7 @@
   </div>
   <div class="modal-body">
     <p>Event Name: {{createdEvent.name}}</p>
-    <p>Event Time: {{createdEvent.dateTime | date: 'medium'}}</p>
+    <p>Event Time: {{createdEvent.datetime | date: 'medium'}}</p>
     <p *ngIf="createdEvent.unlimitedParticipant">Unlimited Attendee : Yes </p>
     <p *ngIf="!createdEvent.unlimitedParticipant">Unlimited Attendee : No </p>
     <p *ngIf="!createdEvent.unlimitedParticipant" >Maximum Attendee : {{createdEvent.unlimitedParticipant}}</p>

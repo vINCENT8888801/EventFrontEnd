@@ -18,7 +18,7 @@
       <div class="form-group row">
         <label class="col-sm-3 col-form-label">Event Date</label>
         <div class="input-group  p-0 col-sm-9">
-          <input class="form-control" name="date" [(ngModel)]="response.dateTime" [minDate]="minDate" ngbDatepicker
+          <input class="form-control" name="date" [(ngModel)]="date" [minDate]="minDate" ngbDatepicker
             #d="ngbDatepicker">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
@@ -69,8 +69,8 @@
 </div>
 
 <ng-template #content let-modal>
-  <div class="modal-header bg-green">
-    <h4 class="modal-title" id="success-register">Successful Update</h4>
+  <div class="modal-header bg-success">
+    <h4 class="modal-title" id="success-update">Successful Update</h4>
     <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
       <span aria-hidden="true">&times;</span>
     </button>

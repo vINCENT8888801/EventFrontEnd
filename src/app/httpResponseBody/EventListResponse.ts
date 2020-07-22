@@ -4,5 +4,5 @@ import { basicHttpResponse } from './basicHttpResponse';
 export interface EventListResponse extends basicHttpResponse{
     eventList: Array<Event>;
     error: string;
-    errorMessage : string;
+    totalPage : Float64Array;
   }

@@ -1,1 +1,39 @@
-<p>home works!</p>
+<div class="container mt-2">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+      <h1 class="h3">Today Events</h1>
+      <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group mr-2">
+          <button class="btn btn-bm btn-outline-success" routerLink="/eventCreate">Add</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="table-responsive">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th>No. </th>
+            <th>Name</th>
+            <th>Date Time</th>
+            <th>Maximum Attendee</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let aEvent of eventList ;index as i">
+            <td> {{i + 1}} </td>
+            <td> {{aEvent.name}} </td>
+            <td> {{aEvent.datetime | date: 'medium'}} </td>
+            <td> {{aEvent.maxAttendee}} </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary mx-1" (click)="goToAttendance(aEvent.libraryId,aEvent.id)">Track Attendance</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination justify-content-center">
+      <ngb-pagination [collectionSize]="totalPage" [pageSize]="1" [(page)]="currentPage" [maxSize]="5" [rotate]="true"
+        [boundaryLinks]="true" (pageChange)="getPage()"></ngb-pagination>
+    </div>
+  </div>

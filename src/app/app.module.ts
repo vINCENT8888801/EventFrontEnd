@@ -20,6 +20,8 @@ import { DatePipe } from '@angular/common';
 import { EventCreateComponent } from './event/event-create/event-create.component';
 import { EventMainComponent } from './event/event-main/event-main.component';
 import { EventDetailComponent } from './event/event-detail/event-detail.component';
+import { InjectableRxStompConfig, RxStompService, rxStompServiceFactory } from '@stomp/ng2-stompjs';
+import { myRxStompConfig } from './RxStompService';
 
 
 @NgModule({
@@ -42,12 +44,21 @@ import { EventDetailComponent } from './event/event-detail/event-detail.componen
     AppRoutingModule,
     NgbModule
   ],
-  providers: [AuthService, AuthGuard,DatePipe,
+  providers: [AuthService, AuthGuard, DatePipe,
     {
-    provide: HTTP_INTERCEPTORS,
-    useClass: TokenInterceptorService,
-    multi: true
-  }],
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptorService,
+      multi: true
+    }, {
+      provide: InjectableRxStompConfig,
+      useValue: myRxStompConfig
+    },
+    {
+      provide: RxStompService,
+      useFactory: rxStompServiceFactory,
+      deps: [InjectableRxStompConfig]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

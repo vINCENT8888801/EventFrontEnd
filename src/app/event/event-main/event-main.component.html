@@ -21,13 +21,53 @@
       </thead>
       <tbody>
         <tr *ngFor="let aEvent of eventList ;index as i">
-          <td> {{i}} </td>
+          <td> {{i + 1}} </td>
           <td> {{aEvent.name}} </td>
-          <td> {{aEvent.dateTime | date: 'medium'}} </td>
-          <td> {{aEvent.maxAttendee}}  </td>
-          <td><button class="btn btn-sm btn-outline-success" (click)="goToDetail(aEvent.id)" >Edit</button></td>
+          <td> {{aEvent.datetime | date: 'medium'}} </td>
+          <td> {{aEvent.maxAttendee}} </td>
+          <td>
+            <button class="btn btn-sm btn-outline-primary mx-1" (click)="GenerateTicket(aEvent.id)">Generate Ticket Code</button>
+            <button class="btn btn-sm btn-outline-warning" (click)="goToDetail(aEvent.id)">Edit</button>
+
+          </td>
         </tr>
       </tbody>
     </table>
   </div>
+  <div class="pagination justify-content-center">
+    <ngb-pagination [collectionSize]="totalPage" [pageSize]="1" [(page)]="currentPage" [maxSize]="5" [rotate]="true"
+      [boundaryLinks]="true" (pageChange)="getPage()"></ngb-pagination>
+  </div>
 </div>
+
+<ng-template #loading let-modal>
+  <div class="modal-header bg-primary">
+    <h4 class="modal-title" id="modal-header">Loading ...</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only "></span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #ticket let-modal>
+  <div class="modal-header bg-success">
+    <h4 class="modal-title" id="modal-header">Code Successfully Generated</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Ticket Code: {{ticketCode}}</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.dismiss()">Continue</button>
+  </div>
+</ng-template>
+

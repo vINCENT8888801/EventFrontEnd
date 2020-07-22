@@ -8,6 +8,8 @@ import { EventDetailResponse } from './httpResponseBody/EventDetailResponse';
 import { UpdateEventRequestBody } from './httpResquestBody/update-event-request-body';
 import { CreateEventResponse } from './httpResponseBody/CreateEventResponse';
 import { CreateEventRequestBody } from './httpResquestBody/create-event_request-body';
+import { GenerateTicketCodeRequestBody } from './httpResquestBody/generate-ticket-request-body';
+import { GenerateTicketResponse } from './httpResponseBody/GenerateTicketResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,8 @@ export class EventService {
   private _eventDetailUrl = this._hostUrl + "/event/detail";
   private _updateEventlUrl = this._hostUrl + "/event/edit";
   private _createEventUrl =this._hostUrl + "/event/create";
+  private _createTicketUrl =this._hostUrl + "/ticket/create";
+  private _getTodayEventURl =this._hostUrl + "/event/today";
 
   constructor(
     private http: HttpClient
@@ -38,5 +42,13 @@ export class EventService {
 
   createEvent(request: CreateEventRequestBody) {
     return this.http.post<CreateEventResponse>(this._createEventUrl, request);
+  }
+
+  generateTicketCode(request: GenerateTicketCodeRequestBody) {
+    return this.http.post<GenerateTicketResponse>(this._createTicketUrl, request);
+  }
+
+  getTodayEventList(request: EventListRequestBody) {
+    return this.http.post<EventListResponse>(this._getTodayEventURl, request);
   }
 }

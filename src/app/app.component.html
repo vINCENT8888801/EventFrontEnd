@@ -1,11 +1,3 @@
-<!-- <div style="text-align:center ; margin:0px">
-  <div class="header">
-    <h1>
-      Event Management System Register Attendee Demo
-    </h1>
-  </div>
-</div> -->
-
 
 <div *ngIf="_authService.loggedIn()" id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
@@ -14,12 +6,9 @@
   <a href="#">Blacklist</a>
 </div>
 
-<!-- <h2>Animated Sidenav Example</h2>
-  <p>Click on the element below to open the side navigation menu.</p> -->
-
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <span *ngIf="_authService.loggedIn()"  style="color:white; font-size:30px;cursor:pointer" (click)="openNav()">&#9776;</span>
+  <span *ngIf="_authService.loggedIn()" class="mr-2" style="color:white; font-size:30px;cursor:pointer" (click)="openNav()">&#9776;</span>
   <a class="navbar-brand" href="#">EventApp</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,12 +17,6 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <!-- <li class="nav-item">
-        <a class="nav-link" routerLink="/events" routerLinkActive="active">Events</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/special" routerLinkActive="active">Members</a>
-      </li> -->
     </ul>
     <ul class="navbar-nav">
       <a class="nav-link" *ngIf="!_authService.loggedIn()" routerLink="/login" routerLinkActive="active">Login</a>

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
@@ -9,18 +9,18 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
   constructor(public _authService: AuthService,
-    private _router: Router){}
+    private _router: Router,) { }
 
-  
-    openNav() {
+
+  openNav() {
     document.getElementById("mySidenav").style.width = "250px";
   }
-  
-   closeNav() {
-    document.getElementById("mySidenav").style.width = "0"; 
+
+  closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
   }
 
-  navBarRedirect(link){
+  navBarRedirect(link) {
     console.log(link);
     this.closeNav();
     this._router.navigate([link]);

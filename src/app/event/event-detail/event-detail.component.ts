@@ -44,10 +44,10 @@ export class EventDetailComponent implements OnInit {
       if(res.status == HttpResponseEnum.SUCCESS)
           {
             this.response = res;
+            
             var date = new Date(res.dateTime);
             this.time =  {hour: date.getHours(), minute: date.getMinutes()};
-            this.response.dateTime = new Date(res.dateTime);
-            
+            this.date = date;
             var today = new Date();
             
             this.minDate = new NgbDate(today.getFullYear() ,today.getMonth() ,today.getUTCDate());
@@ -64,7 +64,7 @@ export class EventDetailComponent implements OnInit {
 
   updateEventDetail(){
     var response = this.response;
-    var dateTime =  this.response.dateTime;
+    var dateTime =  this.date;
     var request = new UpdateEventRequestBody();
     dateTime.setHours(this.time.hour);
     dateTime.setMinutes(this.time.minute);
