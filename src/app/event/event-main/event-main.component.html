@@ -24,11 +24,12 @@
           <td> {{i + 1}} </td>
           <td> {{aEvent.name}} </td>
           <td> {{aEvent.datetime | date: 'medium'}} </td>
-          <td> {{aEvent.maxAttendee}} </td>
+          <td *ngIf="aEvent.maxAttendee"> {{aEvent.maxAttendee}} </td>
+          <td *ngIf="!aEvent.maxAttendee"> Unlimited </td>
           <td>
             <button class="btn btn-sm btn-outline-primary mx-1" (click)="GenerateTicket(aEvent.id)">Generate Ticket Code</button>
             <button class="btn btn-sm btn-outline-warning" (click)="goToDetail(aEvent.id)">Edit</button>
-
+            <button class="btn btn-sm btn-outline-primary mx-1" (click)="goToReport(aEvent.id)">Generate Report</button>
           </td>
         </tr>
       </tbody>

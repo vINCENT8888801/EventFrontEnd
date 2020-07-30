@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, Input } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
@@ -13,6 +13,13 @@ import { EventDetailRequestBody } from '../httpResquestBody/event-detail-request
 import { EventDetailResponse } from '../httpResponseBody/EventDetailResponse';
 import { MarkAttendanceResponse } from '../class/MarkAttendanceResponse';
 import { HttpResponseEnum } from '../class/HttpResponseEnum';
+import { BlacklistSearchSocketResponse } from '../class/blacklist-search-socket-response';
+import { Blacklist } from '../class/Blacklist';
+import { GetObjectTokenRequest } from '../class/getObjectTokenRequest';
+import { GetObjectTokenResponse } from '../class/GetObjectTokenResponse';
+import { RegisterWalkInRequestBody } from '../httpResquestBody/register-walk-in-request-body';
+import { AuthService } from '../auth.service';
+import { Ticket } from '../class/Ticket';
 
 @Component({
   selector: 'app-attendance-mode',
@@ -21,26 +28,45 @@ import { HttpResponseEnum } from '../class/HttpResponseEnum';
 })
 export class AttendanceModeComponent implements OnInit, OnDestroy {
 
-  constructor(private router: Router,
+  constructor(private cdRef: ChangeDetectorRef,
+    private router: Router,
     private modalService: NgbModal,
     private _event: EventService,
+    private _auth: AuthService,
     private route: ActivatedRoute) { }
 
 
   @ViewChild('detectResponseModal') detectResponseModal;
+  @ViewChild('detectBlacklistModal') detectBlacklistModal;
+  @ViewChild('registerModal') registerModal;
+
+
+  //Web Socket Responses
   event: EventDetailResponse;
   socketRes: FaceSearchSocketResponse;
+  objTokenRes: GetObjectTokenResponse;
+  blacklistRes: BlacklistSearchSocketResponse;
+  attendanceResponse: MarkAttendanceResponse;
+
+
+
   socketReq = new FaceSearchSocketRequest();
+  getObjectTokenRequest = new GetObjectTokenRequest();
+
+
   detectedPersonimgURL: String;
   private stompClient;
   private serverUrl = 'http://localhost:8080/socket';
   sendImage: any;
   registeringAttendance: boolean;
   loading: boolean;
-  attendanceResponse: MarkAttendanceResponse;
-  isSuccessfulAttendance : boolean;
-
-
+  isSuccessfulAttendance: boolean;
+  blacklist: Blacklist;
+  registeringWalkingAttendance: boolean;
+  uniqueName : boolean;
+  uniqueEmail : boolean;
+  registerWalkInData = new RegisterWalkInRequestBody();
+  successRegister = false;
 
   // toggle webcam on/off
   public showWebcam = true;
@@ -62,6 +88,10 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   private nextWebcam: Subject<boolean | string> = new Subject<boolean | string>();
 
   public ngOnInit(): void {
+    this.registeringWalkingAttendance = false;
+    this.uniqueName = true;
+    this.uniqueEmail = true;
+
     var eventId = localStorage.getItem('event');
     var request = new EventDetailRequestBody();
     let id = this.route.snapshot.paramMap.get('id');
@@ -80,8 +110,11 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
 
     this.sendImage = setInterval(() => {
       this.triggerSnapshot();
-      this.sendImageToWebSocket();
-
+      if(this.registeringWalkingAttendance){
+        this.getObjectTokenFromWebSocket();
+      }else{
+        this.sendImageToWebSocket();
+      }
     }, 5000);
 
 
@@ -106,12 +139,36 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
         passcode: "password"
       }, function (frame) {
         that.subscribeToFaceDetectObs();
+        that.subscribeToBlacklistDetectObs();
         that.subcribeToMarkAttendanceResult();
       });
 
 
   }
 
+
+  subscribeToBlacklistDetectObs() {
+    this.stompClient.subscribe("/result/blacklist", (message) => {
+      console.log("Received");
+      this.blacklistRes = JSON.parse(message.body);
+      if (this.blacklistRes.blacklist.name != null) {
+        this.blacklist = this.blacklistRes.blacklist;
+        this.registeringAttendance = true;
+        this.loading = false;
+        clearInterval(this.sendImage);
+        this.stompClient.unsubscribe("blacklistDetectObs");
+        this.stompClient.unsubscribe("faceDetectObs");
+        this.blacklistRes.image64 = "data:image/png;base64," + this.blacklistRes.image64;
+        this.blacklistRes.dbImage64 = "data:image/png;base64," + this.blacklistRes.dbImage64;
+        this.modalService.open(this.detectBlacklistModal, {
+          ariaLabelledBy: 'modal-basic-title', backdrop: 'static', size: 'lg'
+        });
+      }
+
+    }, { id: "blacklistDetectObs" });
+
+
+  }
 
   subscribeToFaceDetectObs() {
     this.stompClient.subscribe("/result/detect", (message) => {
@@ -121,6 +178,7 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
         this.registeringAttendance = true;
         this.loading = false;
         clearInterval(this.sendImage);
+        this.stompClient.unsubscribe("blacklistDetectObs");
         this.stompClient.unsubscribe("faceDetectObs");
         this.socketRes.imgString = "data:image/png;base64," + this.socketRes.imgString;
         this.modalService.open(this.detectResponseModal, {
@@ -129,8 +187,28 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
       }
 
     }, { id: "faceDetectObs" });
+  }
 
+  subscribeToFaceRegisterObs() {
+    this.stompClient.subscribe("/result/objToken", (message) => {
+      console.log("Received");
+      this.objTokenRes = JSON.parse(message.body);
+      if (this.objTokenRes.image64bit != null) {
+        this.registeringAttendance = true;
+        this.loading = false;
+        clearInterval(this.sendImage);
+        this.stompClient.unsubscribe("blacklistDetectObs");
+        this.stompClient.unsubscribe("getObjTokenObs");
+        this.objTokenRes.image64bit = "data:image/png;base64," + this.objTokenRes.image64bit;
+        this.registerWalkInData.age = this.objTokenRes.age;
+        this.registerWalkInData.gender = this.objTokenRes.gender;
+        this.registerWalkInData.image64bit = this.objTokenRes.image64bitOriginal;
+        this.modalService.open(this.registerModal, {
+          ariaLabelledBy: 'modal-basic-title', backdrop: 'static', size: 'lg'
+        });
+      }
 
+    }, { id: "getObjTokenObs" });
   }
 
   subcribeToMarkAttendanceResult() {
@@ -141,7 +219,7 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
       this.attendanceResponse = JSON.parse(message.body);
       if (this.attendanceResponse.status == HttpResponseEnum.SUCCESS) {
         this.isSuccessfulAttendance = true;
-      }else{
+      } else {
         this.isSuccessfulAttendance = false;
       }
 
@@ -154,7 +232,13 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
     this.socketReq.imgString = this.webcamImage.imageAsBase64;
     var json = JSON.stringify(this.socketReq);
     this.sendMessage(json);
+  }
 
+  getObjectTokenFromWebSocket() {
+    this.getObjectTokenRequest.imgString = this.webcamImage.imageAsBase64;
+    var json = JSON.stringify(this.getObjectTokenRequest);
+    this.stompClient.send("/app/send/register", {}, json);
+    $('#input').val('');
   }
 
   sendMessage(message) {
@@ -175,6 +259,18 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
 
     }, 5000);
     this.subscribeToFaceDetectObs();
+    this.subscribeToBlacklistDetectObs();
+    this.modalService.dismissAll();
+  }
+
+  public doneWalkIn() {
+    this.sendImage = setInterval(() => {
+      this.triggerSnapshot();
+      this.sendImageToWebSocket();
+
+    }, 5000);
+    this.subscribeToFaceRegisterObs();
+    this.subscribeToBlacklistDetectObs();
     this.modalService.dismissAll();
   }
 
@@ -235,5 +331,47 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
     this.backToAttendance();
   }
 
+  registerWalkIn(){
+    this._auth.validateUser(this.registerWalkInData).subscribe(
+      res => {
+
+        if (res.status == HttpResponseEnum.SUCCESS) {
+          this.registerWalkInData.eventId = +this.route.snapshot.paramMap.get('id');
+          this._event.registerWalkIn(this.registerWalkInData).subscribe(
+            res => {
+              if(res.status == HttpResponseEnum.SUCCESS){
+                this.successRegister = true;
+              }
+            }
+          )
+        } else {
+          this.uniqueEmail = res.uniqueEmail;
+          this.uniqueName = res.uniqueName;
+        }
+
+      },
+      err => console.log(err)
+    )
+  }
+
+  switchMode(){
+    console.log(this.registeringWalkingAttendance);
+    if(this.registeringWalkingAttendance){
+      this.stompClient.unsubscribe("faceDetectObs");
+      this.subscribeToFaceRegisterObs();
+    }else{
+      this.stompClient.unsubscribe("getObjTokenObs");
+      this.subscribeToFaceDetectObs();
+    }
+    clearInterval(this.sendImage);
+    this.sendImage = setInterval(() => {
+      this.triggerSnapshot();
+      if(this.registeringWalkingAttendance){
+        this.getObjectTokenFromWebSocket();
+      }else{
+        this.sendImageToWebSocket();
+      }
+    }, 5000);
+  }
 
 }

@@ -1,0 +1,94 @@
+<form class="form-horizontal" action="/action_page.php">
+  <div class="form-group">
+    <h2> Edit a Blacklist Person</h2>
+  </div>
+
+  <form #blacklistCreateForm="ngForm" class="form">
+
+    <div class="row justify-content-center m-2">
+      <div *ngIf="loading" class="d-flex justify-content-center m-5">
+        <div class="spinner-border" role="status">
+          <span class="sr-only"></span>i
+        </div>
+      </div>
+      <img class="img-fluid" *ngIf="imgString" [src]="imgString" />
+    </div>
+
+    <div class="row justify-content-center m-3">
+      <div class="col-4">
+        <input style="display: none" type="file" (change)="onFileChanged($event)" accept="image/*" #fileInput>
+        <button (click)="fileInput.click()">Upload Photo</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Person Name</label>
+      <input type="text" #name="ngModel" class="col-sm-9" [(ngModel)]="request.name" name="name" required>
+      <div class="col-sm" *ngIf="name.errors && name.touched">
+        <small class="text-danger" *ngIf="name.errors.required">Person Name is required</small>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Gender</label>
+      <div class="col-sm-9 col-form-label">
+        <div class="form-check form-check-inline ">
+          <input class="form-check-input" #gender="ngModel" [(ngModel)]="request.gender" name="gender" type="radio"
+            name="inlineRadioOptions" id="inlineRadio1" value="Male">
+          <label class="form-check-label" for="inlineRadio1">Male</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" #gender="ngModel" [(ngModel)]="request.gender" name="gender" type="radio"
+            name="inlineRadioOptions" id="inlineRadio2" value="Female">
+          <label class="form-check-label" for="inlineRadio2">Female</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label">Person Age</label>
+      <input type="number" #age="ngModel" class="col-sm-9" [(ngModel)]="request.age" name="age" required>
+      <div class="col-sm" *ngIf="age.errors && age.touched">
+        <small class="text-danger" *ngIf="age.errors.required">Person Age is required</small>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-8"></div>
+      <div class="col-sm-4 flex-row-reverse px-0">
+        <button (click)="goBackToBlacklistMain()" class="btn btn-secondary mx-0 float-right">Back</button>
+        <button (click)="updateBlackList()" [disabled]="!blacklistCreateForm.form.valid"
+          class="btn btn-success mx-2 px-3 float-right">Update</button>
+      </div>
+    </div>
+
+  </form>
+
+</form>
+
+
+<ng-template #content let-modal>
+  <div class="modal-header bg-success">
+    <h4 class="modal-title" id="success-register">Blacklist Person Successfully Updated</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container-fluid">
+    <div class="row justify-content-md-center">
+      <img class="img-fluid" *ngIf="imgString" [src]="imgString" />
+    </div>
+    <div class="row justify-content-md-center">
+      <div>Person Name: {{updatedBlackList.name}}</div>
+    </div>
+    <div class="row justify-content-md-center">
+      <div>Person Gender: {{updatedBlackList.gender}}</div>
+    </div>
+    <div class="row justify-content-md-center">
+      <div>Person Age: {{updatedBlackList.age}}</div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="goToMain()">Continue</button>
+  </div>
+</ng-template>

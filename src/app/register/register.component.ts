@@ -57,11 +57,11 @@ export class RegisterComponent implements OnInit {
   }
 
   showModal() {
-    this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' ,backdrop:'static'});
+    this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' });
   }
 
   showStep2() {
-    this.modalService.open(this.getPicture, { ariaLabelledBy: 'modal-basic-title', backdrop:'static'});
+    this.modalService.open(this.getPicture, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' });
   }
 
   goToLogin() {
@@ -98,12 +98,13 @@ export class RegisterComponent implements OnInit {
 
 
   }
+  
   offUniqueEmail() {
     this.uniqueEmail = true;
   }
-  toRegisterDetail(){
+  toRegisterDetail() {
     this.modalService.dismissAll();
-    this.modalService.open(this.getDetail, { ariaLabelledBy: 'modal-basic-title' , backdrop:'static'});
+    this.modalService.open(this.getDetail, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' });
   }
 
   registerUser() {

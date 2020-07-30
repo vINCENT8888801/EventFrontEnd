@@ -1,0 +1,57 @@
+<div class="container mt-2">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+    <h1 class="h3">Blacklisted Person List</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <button class="btn btn-bm btn-outline-success" routerLink="/blacklistCreate">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-striped table-sm">
+      <thead>
+        <tr>
+          <th>No. </th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let aBlacklist of blacklistList ;index as i">
+          <td> {{i + 1}} </td>
+          <td> {{aBlacklist.name}} </td>
+          <td> {{aBlacklist.gender}} </td>
+          <td> {{aBlacklist.age}} </td>
+          <td>
+            <button class="btn btn-sm btn-outline-warning mx-1" (click)="goToDetail(aBlacklist.id)">Edit</button>
+            <button class="btn btn-sm btn-outline-danger mx-1" (click)="delete(aBlacklist.id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination justify-content-center">
+    <ngb-pagination [collectionSize]="totalPage" [pageSize]="1" [(page)]="currentPage" [maxSize]="5" [rotate]="true"
+      [boundaryLinks]="true" (pageChange)="getPage()"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #successDelete let-modal>
+  <div class="modal-header bg-success">
+    <h4 class="modal-title" id="modal-header">Successful Remove</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Blacklisted Person Successfully Removed</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="refreshPage()">Continue</button>
+  </div>
+</ng-template>
+
+

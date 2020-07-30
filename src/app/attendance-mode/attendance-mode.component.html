@@ -1,7 +1,10 @@
 <div style="text-align:center ; margin:0px">
   <div class="header">
-    <h1>
+    <h1 *ngIf="!registeringWalkingAttendance">
       Tracking Attendance For {{event.name}}
+    </h1>
+    <h1 *ngIf="registeringWalkingAttendance">
+      Registering Walk-In Attendance For {{event.name}}
     </h1>
   </div>
 
@@ -20,7 +23,27 @@
       <br/>
       DeviceId: <input id="deviceId" type="text" [(ngModel)]="deviceId" style="width: 500px">
       <button (click)="showNextWebcam(deviceId);">Activate</button> -->
+
+
+
+    <!-- <button *ngIf="!registeringWalkingAttendance" type="button" (click)="switchToRegisterAttendance" class="btn btn-primary" autocomplete="off">
+        Register A Walk-In Attendance
+      </button>
+
+      <button *ngIf="registeringWalkingAttendance" type="button" (click)="switchToTrackingAttendance" class="btn btn-success" autocomplete="off">
+        Back to Tracking Attendance
+      </button> -->
+
+    <div>
+      <label class="col-sm-3 col-form-label">Registering Walk In Attendance? </label>
+      <div class="custom-control custom-switch m-2">
+        <input type="checkbox" class="custom-control-input" #name="ngModel" [(ngModel)]="registeringWalkingAttendance"
+          id="customSwitch1" name="unlimitedParticipant" (change)="switchMode()">
+        <label class="custom-control-label" for="customSwitch1"></label>
+      </div>
+    </div>
   </div>
+
 </div>
 
 
@@ -57,7 +80,7 @@
     <div class="modal-body">
       <div class="container-fluid">
         <div class="row">
-          <div  class="spinner-border text-primary" role="status">
+          <div class="spinner-border text-primary" role="status">
             <span class="sr-only">Loading...</span>
           </div>
         </div>
@@ -74,7 +97,7 @@
     <div class="modal-body">
       <div class="container-fluid">
         <div class="row">
-          <div >
+          <div>
             <h2 *ngIf="isSuccessfulAttendance"> Attendance Taken Successfully</h2>
             <h2 *ngIf="!isSuccessfulAttendance"> Attendance Taking is Unsuccessful.Please retry.</h2>
           </div>
@@ -86,6 +109,148 @@
       </div>
     </div>
   </div>
+</ng-template>
 
 
+<ng-template #detectBlacklistModal let-modal>
+  <div class="modal-header bg-danger">
+    <h4 class="modal-title" id="success-register">This Person is Blacklisted</h4>
+  </div>
+  <div *ngIf="registeringAttendance&&!loading">
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="snapshot" *ngIf="webcamImage">
+            <img *ngIf="blacklistRes || blacklistRes.image64" [src]="blacklistRes.image64" />
+
+            <h2 *ngIf="blacklistRes || blacklist"> Name: {{blacklist.name}}</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" (click)="backToAttendance()">OK</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="registeringAttendance&& loading">
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #registerModal let-modal>
+  <div *ngIf="!successRegister" class="modal-header bg-primary">
+    <h4 class="modal-title" id="success-register">Register Walk In Attendance</h4>
+  </div>
+  <div *ngIf="!successRegister">
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row justify-content-md-center">
+          <div class="snapshot" *ngIf="webcamImage">
+            <img class="img-fluid" *ngIf="objTokenRes || objTokenRes.image64bit" [src]="objTokenRes.image64bit" />
+          </div>
+        </div>
+        <form #registerWalkInForm="ngForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" #email="ngModel" name="email"
+              [(ngModel)]="registerWalkInData.email" [class.is-invalid]="email.invalid && email.touched"
+              class="form-control rounded-0" autocomplete="off" required>
+            <div *ngIf="(email.errors && email.touched)">
+              <small class="text-danger" *ngIf="email.errors.required">Email is required</small>
+              <small class="text-danger" *ngIf="email.errors.pattern">Invalid Email format</small>
+            </div>
+            <div *ngIf="!uniqueEmail">
+              <small class="text-danger" *ngIf="!uniqueEmail">This Email have been used</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" [(ngModel)]="registerWalkInData.name" #name="ngModel" name="name"
+              class="form-control rounded-0" [class.is-invalid]="name.invalid && name.touched" required minlength="3"
+              maxlength="20" autocomplete="off">
+            <div *ngIf="name.errors && name.touched">
+              <small class="text-danger" *ngIf="name.errors.required">Name is required</small>
+              <small class="text-danger" *ngIf="name.errors.minlength">Name must be more than 3 character</small>
+            </div>
+            <div *ngIf="!uniqueName">
+              <small class="text-danger" *ngIf="!uniqueName">This Username have been used</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" [(ngModel)]="registerWalkInData.password" #password="ngModel" name="password"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$" class="form-control rounded-0" required
+              minlength="6" [class.is-invalid]="password.invalid && password.touched" autocomplete="off">
+            <div *ngIf="password.errors && password.touched">
+              <small class="text-danger" *ngIf="password.errors.required">Password is required</small>
+              <small class="text-danger" *ngIf="password.errors.pattern">Password must be more than 6 character, at
+                least one uppercase and one lowercase letter</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="number" #age="ngModel" name="age" [(ngModel)]="registerWalkInData.age"
+              [class.is-invalid]="age.invalid && age.touched" class="form-control rounded-0" autocomplete="off" required
+              max="150">
+            <div *ngIf="(age.errors && age.touched)">
+              <small class="text-danger" *ngIf="age.errors.required">Age is required</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Gender </label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" #gender="ngModel" [(ngModel)]="registerWalkInData.gender" name="gender"
+                  type="radio" name="inlineRadioOptions" id="inlineRadio1" value="Male">
+                <label class="form-check-label" for="inlineRadio1">Male</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" #gender="ngModel" [(ngModel)]="registerWalkInData.gender" name="gender"
+                  type="radio" name="inlineRadioOptions" id="inlineRadio2" value="Female">
+                <label class="form-check-label" for="inlineRadio2">Female</label>
+              </div>
+            </div>
+    
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" (click)="registerWalkIn()">Register</button>
+        <button type="button" class="btn btn-outline-warning" (click)="backToAttendance()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div *ngIf="successRegister" class="modal-header bg-success">
+    <h4 class="modal-title" id="success-register">Success Register</h4>
+  </div>
+  <div *ngIf="successRegister">
+    <div class="modal-body">
+      <div class="container-fluid">
+        <div class="row justify-content-md-center">
+          Registration is Successful
+        </div>
+        
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" (click)="doneWalkIn()">OK</button>
+      </div>
+    </div>
+  </div>
 </ng-template>

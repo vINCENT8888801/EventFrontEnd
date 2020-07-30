@@ -10,6 +10,8 @@ import { CreateEventResponse } from './httpResponseBody/CreateEventResponse';
 import { CreateEventRequestBody } from './httpResquestBody/create-event_request-body';
 import { GenerateTicketCodeRequestBody } from './httpResquestBody/generate-ticket-request-body';
 import { GenerateTicketResponse } from './httpResponseBody/GenerateTicketResponse';
+import { RegisterWalkInRequestBody } from './httpResquestBody/register-walk-in-request-body';
+import { RegisterWalkInResponse } from './httpResponseBody/RegisterWalkInResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,7 @@ export class EventService {
   private _updateEventlUrl = this._hostUrl + "/event/edit";
   private _createEventUrl =this._hostUrl + "/event/create";
   private _createTicketUrl =this._hostUrl + "/ticket/create";
+  private _registerWalkInUrl =this._hostUrl + "/ticket/registerwalkin";
   private _getTodayEventURl =this._hostUrl + "/event/today";
 
   constructor(
@@ -46,6 +49,10 @@ export class EventService {
 
   generateTicketCode(request: GenerateTicketCodeRequestBody) {
     return this.http.post<GenerateTicketResponse>(this._createTicketUrl, request);
+  }
+
+  registerWalkIn(request: RegisterWalkInRequestBody) {
+    return this.http.post<RegisterWalkInResponse>(this._registerWalkInUrl, request);
   }
 
   getTodayEventList(request: EventListRequestBody) {

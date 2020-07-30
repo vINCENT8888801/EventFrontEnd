@@ -43,6 +43,10 @@ export class EventMainComponent implements OnInit {
     this._router.navigate(['/eventDetail', { id: id }]);
   }
 
+  goToReport(id) {
+    this._router.navigate(['/eventReport', { id: id }]);
+  }
+
   getPage() {
     var req = new EventListRequestBody();
     req.pageRequested = this.currentPage - 1;

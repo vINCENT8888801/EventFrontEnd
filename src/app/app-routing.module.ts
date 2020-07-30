@@ -9,6 +9,10 @@ import { EventMainComponent } from './event/event-main/event-main.component';
 import { EventDetailComponent } from './event/event-detail/event-detail.component';
 import { EventCreateComponent } from './event/event-create/event-create.component';
 import { AttendanceModeComponent } from './attendance-mode/attendance-mode.component';
+import { BlacklistMainComponent } from './blacklist/blacklist-main/blacklist-main.component';
+import { BlacklistCreateComponent } from './blacklist/blacklist-create/blacklist-create.component';
+import { BlacklistEditComponent } from './blacklist/blacklist-edit/blacklist-edit.component';
+import { EventReportComponent } from './event/event-report/event-report.component';
 
 
 
@@ -38,18 +42,38 @@ const routes: Routes = [
   },
   {
     path: 'eventDetail',
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     component: EventDetailComponent
   },
   {
+    path: 'eventReport',
+    canActivate: [AuthGuard],
+    component: EventReportComponent
+  },
+  {
     path: 'eventCreate',
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     component: EventCreateComponent 
   },
   {
     path: 'attendance',
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     component: AttendanceModeComponent
+  },
+  {
+    path: 'blacklist',
+    canActivate: [AuthGuard],
+    component: BlacklistMainComponent
+  },
+  {
+    path: 'blacklistDetail',
+    canActivate: [AuthGuard],
+    component: BlacklistEditComponent
+  },
+  {
+    path: 'blacklistCreate',
+    canActivate: [AuthGuard],
+    component: BlacklistCreateComponent 
   },
 ];
 
