@@ -12,13 +12,17 @@ import { GenerateTicketCodeRequestBody } from './httpResquestBody/generate-ticke
 import { GenerateTicketResponse } from './httpResponseBody/GenerateTicketResponse';
 import { RegisterWalkInRequestBody } from './httpResquestBody/register-walk-in-request-body';
 import { RegisterWalkInResponse } from './httpResponseBody/RegisterWalkInResponse';
+import { EventReportResponse } from './httpResponseBody/EventReportResponse';
+import { DeleteEventRequestBody } from './httpResquestBody/delete-event-request-body';
+import { DeleteEventResponse } from './httpResponseBody/DeleteEventResponse';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
 
-  private _hostUrl = "http://localhost:8080";
+  private _hostUrl = environment.hostUrl;
   private _eventListUrl = this._hostUrl + "/event/list";
   private _eventDetailUrl = this._hostUrl + "/event/detail";
   private _updateEventlUrl = this._hostUrl + "/event/edit";
@@ -26,6 +30,8 @@ export class EventService {
   private _createTicketUrl =this._hostUrl + "/ticket/create";
   private _registerWalkInUrl =this._hostUrl + "/ticket/registerwalkin";
   private _getTodayEventURl =this._hostUrl + "/event/today";
+  private _getEventReportURL =this._hostUrl + "/event/report";
+  private _deleteEventURL = this._hostUrl + "/event/delete";
 
   constructor(
     private http: HttpClient
@@ -57,5 +63,13 @@ export class EventService {
 
   getTodayEventList(request: EventListRequestBody) {
     return this.http.post<EventListResponse>(this._getTodayEventURl, request);
+  }
+
+  getEventReport(request: EventDetailRequestBody){
+    return this.http.post<EventReportResponse>(this._getEventReportURL, request);
+  }
+
+  deleteEvent(request: DeleteEventRequestBody){
+    return this.http.post<DeleteEventResponse>(this._deleteEventURL, request);
   }
 }

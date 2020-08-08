@@ -20,6 +20,7 @@ import { GetObjectTokenResponse } from '../class/GetObjectTokenResponse';
 import { RegisterWalkInRequestBody } from '../httpResquestBody/register-walk-in-request-body';
 import { AuthService } from '../auth.service';
 import { Ticket } from '../class/Ticket';
+import { CheckInAttendeeRequest } from '../class/CheckInAttendeeRequest';
 
 @Component({
   selector: 'app-attendance-mode',
@@ -47,12 +48,12 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   objTokenRes: GetObjectTokenResponse;
   blacklistRes: BlacklistSearchSocketResponse;
   attendanceResponse: MarkAttendanceResponse;
-
+  
 
 
   socketReq = new FaceSearchSocketRequest();
   getObjectTokenRequest = new GetObjectTokenRequest();
-
+  checkInReq = new CheckInAttendeeRequest();
 
   detectedPersonimgURL: String;
   private stompClient;
@@ -67,6 +68,7 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   uniqueEmail : boolean;
   registerWalkInData = new RegisterWalkInRequestBody();
   successRegister = false;
+  temperature : number;
 
   // toggle webcam on/off
   public showWebcam = true;
@@ -179,6 +181,7 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
         this.loading = false;
         clearInterval(this.sendImage);
         this.stompClient.unsubscribe("blacklistDetectObs");
+        console.log(this.socketRes.alreadyRegistered);
         this.stompClient.unsubscribe("faceDetectObs");
         this.socketRes.imgString = "data:image/png;base64," + this.socketRes.imgString;
         this.modalService.open(this.detectResponseModal, {
@@ -194,12 +197,13 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
       console.log("Received");
       this.objTokenRes = JSON.parse(message.body);
       if (this.objTokenRes.image64bit != null) {
-        this.registeringAttendance = true;
+        this.registeringAttendance = false;
         this.loading = false;
         clearInterval(this.sendImage);
         this.stompClient.unsubscribe("blacklistDetectObs");
         this.stompClient.unsubscribe("getObjTokenObs");
         this.objTokenRes.image64bit = "data:image/png;base64," + this.objTokenRes.image64bit;
+        this.registerWalkInData.objToken = this.objTokenRes.objToken;
         this.registerWalkInData.age = this.objTokenRes.age;
         this.registerWalkInData.gender = this.objTokenRes.gender;
         this.registerWalkInData.image64bit = this.objTokenRes.image64bitOriginal;
@@ -255,8 +259,11 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   public backToAttendance() {
     this.sendImage = setInterval(() => {
       this.triggerSnapshot();
-      this.sendImageToWebSocket();
-
+      if(this.registeringWalkingAttendance){
+        this.getObjectTokenFromWebSocket();
+      }else{
+        this.sendImageToWebSocket();
+      }
     }, 5000);
     this.subscribeToFaceDetectObs();
     this.subscribeToBlacklistDetectObs();
@@ -266,9 +273,14 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   public doneWalkIn() {
     this.sendImage = setInterval(() => {
       this.triggerSnapshot();
-      this.sendImageToWebSocket();
-
+      if(this.registeringWalkingAttendance){
+        this.getObjectTokenFromWebSocket();
+      }else{
+        this.sendImageToWebSocket();
+      }
     }, 5000);
+    this.checkInReq = new CheckInAttendeeRequest();
+    this.successRegister = false;
     this.subscribeToFaceRegisterObs();
     this.subscribeToBlacklistDetectObs();
     this.modalService.dismissAll();
@@ -321,8 +333,11 @@ export class AttendanceModeComponent implements OnInit, OnDestroy {
   //Step 2
   markAttendance() {
     this.registeringAttendance = true;
+    
     this.loading = true;
-    this.stompClient.send("/app/send/attend", {}, this.socketRes.ticketId);
+    this.checkInReq.ticketId = this.socketRes.ticketId;
+    var json = JSON.stringify(this.checkInReq);
+    this.stompClient.send("/app/send/attend", {}, json);
   }
 
   doneAttendance() {

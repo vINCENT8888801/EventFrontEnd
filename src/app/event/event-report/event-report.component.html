@@ -1,9 +1,25 @@
-<!-- <div class="container">
-    <ngx-charts-pie-chart 
-    [results]="saleData"
-    [legend]="true"
-    [legendTitle]="'Product Sale Report'" 
-    [view]="[1000,300]"
-    [labels]="true" >
-    </ngx-charts-pie-chart>
-</div> -->
+<div class="container mt-2">
+
+  <div class="row">
+    <h1 class="h3">Events Statistic</h1>
+    <div class="m-2">
+      <ngx-charts-pie-chart [results]="attendanceData" [legend]="true" [legendTitle]="'Attendance'" [view]="[1000,300]"
+        [labels]="true">
+      </ngx-charts-pie-chart>
+    </div>
+
+    <div class="m-2">
+      <ngx-charts-pie-chart [results]="saleData" [legend]="true" [legendTitle]="'Attendees Gender'" [view]="[1000,300]"
+        [labels]="true">
+      </ngx-charts-pie-chart>
+    </div>
+
+    <div class="m-2">
+      <ngx-charts-bar-vertical [view]="[1000,300]"  [results]="temperatureData" [gradient]="false"
+        [xAxis]="true" [yAxis]="true" [legend]="true" [showXAxisLabel]="true"
+        [showYAxisLabel]="true" [xAxisLabel]="'Body Temperature'" [yAxisLabel]="'Frequency'"
+        >
+      </ngx-charts-bar-vertical>
+    </div>
+  </div>
+</div>

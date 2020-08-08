@@ -30,6 +30,7 @@
             <button class="btn btn-sm btn-outline-primary mx-1" (click)="GenerateTicket(aEvent.id)">Generate Ticket Code</button>
             <button class="btn btn-sm btn-outline-warning" (click)="goToDetail(aEvent.id)">Edit</button>
             <button class="btn btn-sm btn-outline-primary mx-1" (click)="goToReport(aEvent.id)">Generate Report</button>
+            <button class="btn btn-sm btn-outline-danger mx-1" (click)="delete(aEvent.id)">Delete Event</button>
           </td>
         </tr>
       </tbody>
@@ -72,3 +73,18 @@
   </div>
 </ng-template>
 
+
+<ng-template #deleteModal let-modal>
+  <div class="modal-header bg-success">
+    <h4 class="modal-title" id="modal-header">Successful Remove</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>Event Successfully Removed</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="refreshPage()">Continue</button>
+  </div>
+</ng-template>

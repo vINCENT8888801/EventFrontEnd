@@ -6,6 +6,7 @@ import { HttpResponseEnum } from 'src/app/class/HttpResponseEnum';
 import { Event } from 'src/app/class/Event';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GenerateTicketCodeRequestBody } from 'src/app/httpResquestBody/generate-ticket-request-body';
+import { DeleteEventRequestBody } from 'src/app/httpResquestBody/delete-event-request-body';
 
 @Component({
   selector: 'app-event-main',
@@ -15,10 +16,12 @@ import { GenerateTicketCodeRequestBody } from 'src/app/httpResquestBody/generate
 export class EventMainComponent implements OnInit {
   @ViewChild("loading") loading;
   @ViewChild("ticket") ticket;
+  @ViewChild("deleteModal") deleteModal;
   totalPage: Float64Array;
   currentPage: any;
   eventList: Array<Event>;
   ticketCode: string;
+  pendingDelete : number;
 
   constructor(private _event: EventService,
     private _router: Router,
@@ -74,5 +77,22 @@ export class EventMainComponent implements OnInit {
       }
     })
 
+  }
+
+  delete(id) {
+    let req = new DeleteEventRequestBody();
+    req.eventId = id;
+    this._event.deleteEvent(req).subscribe(res => {
+      if (res.status == HttpResponseEnum.SUCCESS) {
+        this.modalService.open(this.deleteModal, { ariaLabelledBy: 'modal-basic-title' });
+        
+      } else {
+
+      }
+    })
+  }
+
+  refreshPage(){
+    location.reload();
   }
 }

@@ -8,6 +8,6 @@ export class FaceSearchSocketResponse {
     public imgString :String ;
     public accuracy :Float64Array ;
     public ticketId : String;
-
+    public alreadyRegistered : boolean;
     
 }
